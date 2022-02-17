@@ -1,0 +1,24 @@
+@import url("https://webglfundamentals.org/webgl/resources/webgl-tutorials.css");
+body {
+  margin: 0;
+}
+#main-canvas {
+  width: 80vw;
+  height: 100vh;
+  display: block;
+}
+.flex {
+  display: flex;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-col {
+  flex-direction: row;
+}
+.bg-gray {
+  background-color: gainsboro;
+}
+.w-full {
+  width: 100%;
+}
