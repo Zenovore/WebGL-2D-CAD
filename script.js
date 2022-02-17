@@ -3,7 +3,9 @@ var colorBuffer
 const maxVertex = 10000
 var countClick = 0
 var selectedShape = 'line'
-
+var positionAttributeLocation
+var colorUniformLocation
+var selectedColor = {r:0,g:0,b:0}
 
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
@@ -62,31 +64,42 @@ function getMouseCoordinate(event,gl){
   }
 }
 
+function getColorInHex(e){
+  console.log(e.target.value)
+  hex = e.target.value
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  var rgbData = result ?  {
+    r: parseInt(result[1], 16)/255,
+    g: parseInt(result[2], 16)/255,
+    b: parseInt(result[3], 16)/255
+  } : null;
+  selectedColor = rgbData
+}
+
 function mouseClicked(gl,pos){
   // Mode memindah vertex
   // if (moveMode) {TODO : Ambil moveMode dari input}
   // Mode Membuat Shape
-    var shape = document.getElementById("shape");
-    shape.addEventListener("click", function (e) {
-      selectedShape = e.target.value;
-    });
-    // Line
-    if (selectedShape == 'line'){
-      console.log('line')
-    }
-    // Square
-    if (selectedShape == 'square'){
-      console.log('square')
-    }
-    // Rectangle (Adjustable)
-    if (selectedShape == 'rectangle'){
-      console.log('rectangle')
-    }
-    // Polygon
-    if (selectedShape == 'polygon'){
-      console.log('polygon')
-    }
-  // 
+  // Line
+  if (selectedShape == 'line'){
+    console.log('line')
+  }
+  // Square
+  if (selectedShape == 'square'){
+    console.log('square')
+  }
+  // Rectangle (Adjustable)
+  if (selectedShape == 'rectangle'){
+    console.log('rectangle')
+  }
+  // Polygon
+  if (selectedShape == 'polygon'){
+    console.log('polygon')
+  }
+  render(gl,pos)
+}
+function render(gl,pos){
+
   var positions = [
     pos.x, pos.y,
     pos.x, pos.y + 0.3,
@@ -97,17 +110,19 @@ function mouseClicked(gl,pos){
     pos.x,pos.y,
     pos.x+0.5,pos.y
   ]
-  positions3 = new Float32Array([positions3])
+  positions3 = new Float32Array(positions3)
+  positions = new Float32Array(positions)
+  
 
+  gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
   // Contoh penggunaan drawArray, masing masing shape ada cara untuk draw Array sendiri
-  // var primitiveType = gl.TRIANGLE;
-  // var offset = 0;
-  // var count = 3;
+  var primitiveType = gl.LINES;
+  var offset = 0;
+  var count = 3;
 
-  // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  // gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions3);
-  // gl.drawArrays(primitiveType, offset, count);
-
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions3);
+  gl.drawArrays(primitiveType, offset, count);
 }
 
 window.onload = function init() {
@@ -139,10 +154,20 @@ window.onload = function init() {
   positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, 24 * maxVertex, gl.STATIC_DRAW);
-  var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+  positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+  colorUniformLocation = gl.getUniformLocation(program, "u_color");
   gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionAttributeLocation);
 
+  var shape = document.getElementById("shape");
+  shape.addEventListener("click", function (e) {
+    selectedShape = e.target.value;
+  });
+
+  var color = document.getElementById("color-picker");
+  color.addEventListener("change", function (e) {
+    getColorInHex(e)
+  });
   // colorBuffer = gl.createBuffer();
   // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
   // gl.bufferData(gl.ARRAY_BUFFER, 24 * maxVertex, gl.STATIC_DRAW);
@@ -155,7 +180,7 @@ window.onload = function init() {
     console.log(event)
     let pos = getMouseCoordinate(event,gl)
     console.log(pos)
-    mouseClicked(gl,pos)
+    render(gl,pos)
   });
   
 }
