@@ -6,6 +6,15 @@ var selectedShape = 'line'
 var positionAttributeLocation
 var colorUniformLocation
 var selectedColor = {r:0,g:0,b:0}
+var saveData // TODO: Fitur save, semua shape dan color disimpan kesini
+var allLineData // TODO: Array of all line [[lineData],[lineData]]
+var lineData // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
+var allSquareData // TODO: Array of all line [[squareData],[squareData]]
+var squareData // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allRectangleData // TODO: Array of all line [[rectangleData],[rectangleData]]
+var rectangleData// TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allPolygonData  // TODO: Array of all polygon [[polygonData],[polygonData]]
+var polygonData // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
 
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
@@ -76,56 +85,87 @@ function getColorInHex(e){
   selectedColor = rgbData
 }
 
-function mouseClicked(gl,pos){
+function mouseClicked(gl,pos){ // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
   // Mode memindah vertex
   // if (moveMode) {TODO : Ambil moveMode dari input}
   // Mode Membuat Shape
-  // Line
+  // Line TODO: Afif
   if (selectedShape == 'line'){
     console.log('line')
   }
-  // Square
+  // Square TODO: Ahan
   if (selectedShape == 'square'){
     console.log('square')
   }
-  // Rectangle (Adjustable)
+  // Rectangle (Adjustable) TODO: Chris
   if (selectedShape == 'rectangle'){
     console.log('rectangle')
   }
-  // Polygon
+  // Polygon TODO: Alex
   if (selectedShape == 'polygon'){
     console.log('polygon')
   }
   render(gl,pos)
 }
-function render(gl,pos){
+function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai bentuk
 
-  var positions = [
-    pos.x, pos.y,
-    pos.x, pos.y + 0.3,
-    pos.x + 0.3, pos.y,
-  ];
-  
-  var positions3=[
-    pos.x,pos.y,
-    pos.x+0.5,pos.y
-  ]
-  positions3 = new Float32Array(positions3)
-  positions = new Float32Array(positions)
-  
+  // Line TODO: Afif
+  if (selectedShape == 'line'){
+    console.log('line')
+  }
+  // Square TODO: Ahan
+  if (selectedShape == 'square'){
+    console.log('square')
+  }
+  // Rectangle (Adjustable) TODO: Chris
+  if (selectedShape == 'rectangle'){
+    console.log('rectangle')
+  }
+  // Polygon TODO: Alex
+  if (selectedShape == 'polygon'){
+    console.log('polygon')
+  }
 
+
+  // How to draw 
+  // 1. Bikin posisinya, posisinya dependen sama lokasi cursor, yaitu pos
+  
+  // var positions = [
+  //   pos.x, pos.y,
+  //   pos.x, pos.y + 0.3,
+  //   pos.x + 0.3, pos.y,
+  // ];
+  
+  // var positions3=[
+  //   pos.x,pos.y,
+  //   pos.x+0.5,pos.y
+  // ]
+
+  // 2. Ubah Posisi ke Array Float32
+  // positions3 = new Float32Array(positions3)
+  // positions = new Float32Array(positions)
+  
+  // 3. warna, sudah sesuai sama data di input
   gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
-  // Contoh penggunaan drawArray, masing masing shape ada cara untuk draw Array sendiri
-  var primitiveType = gl.LINES;
-  var offset = 0;
-  var count = 3;
+  
+  // 4. Bind Buffer
+  // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions3);
-  gl.drawArrays(primitiveType, offset, count);
+  // 5. Masukin Array Float32 ke dalem buffer subData
+  // gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+
+  // 6. Contoh penggunaan drawArray, masing masing shape ada cara untuk draw Array sendiri
+  // var primitiveType = gl.TRIANGLES;
+  // primitive Type ini ada berbagai macam bentuk, bisa cek di dokumentasi
+  // var offset = 0;
+  // var count = 3;
+  
+  // 7. Gambar 
+  // gl.drawArrays(primitiveType, offset, count);
 }
 
 window.onload = function init() {
+  // SETUP WEBGL
   var canvas = document.querySelector("#main-canvas");
   var gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
   // var gl = WebGLUtils.setupWebGL(canvas,{preserveDrawingBuffer: true});
@@ -159,6 +199,7 @@ window.onload = function init() {
   gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionAttributeLocation);
 
+  // EVENT HANDLER
   var shape = document.getElementById("shape");
   shape.addEventListener("click", function (e) {
     selectedShape = e.target.value;
@@ -168,14 +209,8 @@ window.onload = function init() {
   color.addEventListener("change", function (e) {
     getColorInHex(e)
   });
-  // colorBuffer = gl.createBuffer();
-  // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  // gl.bufferData(gl.ARRAY_BUFFER, 24 * maxVertex, gl.STATIC_DRAW);
-  // var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-  // gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-  // gl.enableVertexAttribArray(positionAttributeLocation);
 
-
+  // EVENT HANDLER
   canvas.addEventListener("click", (event) => {
     console.log(event)
     let pos = getMouseCoordinate(event,gl)
