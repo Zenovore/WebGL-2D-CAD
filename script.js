@@ -1,8 +1,11 @@
+var gl
 var positionBuffer
 var colorBuffer
 const maxVertex = 10000
 var countClick = 0
 var selectedShape = 'line'
+var polygonVertex = 3;
+var countPolygonVertex = 3;
 var positionAttributeLocation
 var colorUniformLocation
 var selectedColor = {r:0,g:0,b:0}
@@ -13,8 +16,10 @@ var allSquareData // TODO: Array of all line [[squareData],[squareData]]
 var squareData // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
 var allRectangleData // TODO: Array of all line [[rectangleData],[rectangleData]]
 var rectangleData// TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
-var allPolygonData  // TODO: Array of all polygon [[polygonData],[polygonData]]
-var polygonData // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
+var allPolygonData = [];  // TODO: Array of all polygon [[polygonData],[polygonData]]
+var polygonData = []; // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
+var canvasWidth
+var canvasHeight
 
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
@@ -65,11 +70,11 @@ function getRelativeMousePosition(event) {
   }
 }
 
-function getMouseCoordinate(event,gl){
+function getMouseCoordinate(event){
   var pos = getRelativeMousePosition(event);
   return {
-     x : pos.x / gl.canvas.width  *  2 - 1,
-     y : pos.y / gl.canvas.height * -2 + 1,    
+     x : pos.x / canvasWidth  *  2 - 1,
+     y : pos.y / canvasHeight * -2 + 1,    
   }
 }
 
@@ -85,7 +90,7 @@ function getColorInHex(e){
   selectedColor = rgbData
 }
 
-function mouseClicked(gl,pos){ // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
+function mouseClicked(pos){ // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
   // Mode memindah vertex
   // if (moveMode) {TODO : Ambil moveMode dari input}
   // Mode Membuat Shape
@@ -104,10 +109,24 @@ function mouseClicked(gl,pos){ // TODO: Ambil vertex dari pos, cari pasangannya,
   // Polygon TODO: Alex
   if (selectedShape == 'polygon'){
     console.log('polygon')
+    console.log(pos)
+    countPolygonVertex--;
+    console.log(countPolygonVertex)
+    if (countPolygonVertex == 0){
+      polygonData.push(pos.x)
+      polygonData.push(pos.y)
+      console.log(polygonData)
+      render();
+    } else {
+      polygonData.push(pos.x)
+      polygonData.push(pos.y)
+    }
+    
+
   }
-  render(gl,pos)
+  // render(gl,pos)
 }
-function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai bentuk
+function render(){ // TODO: Ambil vertex data, create array, gambar sesuai bentuk
 
   // Line TODO: Afif
   if (selectedShape == 'line'){
@@ -123,7 +142,15 @@ function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai
   }
   // Polygon TODO: Alex
   if (selectedShape == 'polygon'){
-    console.log('polygon')
+    positions = new Float32Array(polygonData)
+    gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+    count = polygonVertex
+    countPolygonVertex = polygonVertex
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, count);
+    allPolygonData.push([polygonData,selectedColor,polygonVertex]) // SAVE TO DATA
+    polygonData = []
   }
 
 
@@ -133,7 +160,8 @@ function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai
   // var positions = [
   //   pos.x, pos.y,
   //   pos.x, pos.y + 0.3,
-  //   pos.x + 0.3, pos.y,
+  //   pos.x + 0.2, pos.y,
+  //   pos.x + 0.2, pos.y+0.3,
   // ];
   
   // var positions3=[
@@ -142,11 +170,11 @@ function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai
   // ]
 
   // 2. Ubah Posisi ke Array Float32
-  // positions3 = new Float32Array(positions3)
-  // positions = new Float32Array(positions)
+  // positions3 = new Float32Array(positions)
+  // console.log(positions)
   
   // 3. warna, sudah sesuai sama data di input
-  gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
+  // gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
   
   // 4. Bind Buffer
   // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -155,7 +183,7 @@ function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai
   // gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
 
   // 6. Contoh penggunaan drawArray, masing masing shape ada cara untuk draw Array sendiri
-  // var primitiveType = gl.TRIANGLES;
+  // var primitiveType = gl.TRIANGLE_STRIP;
   // primitive Type ini ada berbagai macam bentuk, bisa cek di dokumentasi
   // var offset = 0;
   // var count = 3;
@@ -167,7 +195,7 @@ function render(gl,pos){ // TODO: Ambil vertex data, create array, gambar sesuai
 window.onload = function init() {
   // SETUP WEBGL
   var canvas = document.querySelector("#main-canvas");
-  var gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
+  gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
   // var gl = WebGLUtils.setupWebGL(canvas,{preserveDrawingBuffer: true});
   if (!gl) {
     alert ("WebGL is not available");
@@ -199,6 +227,9 @@ window.onload = function init() {
   gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionAttributeLocation);
 
+  canvasWidth = gl.canvas.width
+  canvasHeight = gl.canvas.height
+
   // EVENT HANDLER
   var shape = document.getElementById("shape");
   shape.addEventListener("click", function (e) {
@@ -209,13 +240,19 @@ window.onload = function init() {
   color.addEventListener("change", function (e) {
     getColorInHex(e)
   });
-
+  
+  var polygonVertexInput = document.getElementById("polygon-vertex");
+  polygonVertexInput.addEventListener("change", function (e) {
+    polygonVertex = e.target.value
+    countPolygonVertex = polygonVertex
+    polygonData = []
+  });
   // EVENT HANDLER
   canvas.addEventListener("click", (event) => {
     console.log(event)
-    let pos = getMouseCoordinate(event,gl)
+    let pos = getMouseCoordinate(event)
     console.log(pos)
-    render(gl,pos)
+    mouseClicked(pos)
   });
   
 }
