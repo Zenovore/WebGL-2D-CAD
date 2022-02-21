@@ -1,26 +1,26 @@
-var gl
-var positionBuffer
-var colorBuffer
-const maxVertex = 10000
-var countClick = 0
-var selectedShape = 'line'
+var gl;
+var positionBuffer;
+var colorBuffer;
+const maxVertex = 10000;
+var countClick = 0;
+var selectedShape = "line";
 var polygonVertex = 3;
 var countPolygonVertex = 3;
 var countRectangleVertex = 2;
-var positionAttributeLocation
-var colorUniformLocation
-var selectedColor = {r:0,g:0,b:0}
-var saveData // TODO: Fitur save, semua shape dan color disimpan kesini
-var allLineData // TODO: Array of all line [[lineData],[lineData]]
-var lineData // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
-var allSquareData // TODO: Array of all line [[squareData],[squareData]]
-var squareData // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
-var allRectangleData = []// TODO: Array of all line [[rectangleData],[rectangleData]]
-var rectangleData = []// TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
-var allPolygonData = [];  // TODO: Array of all polygon [[polygonData],[polygonData]]
+var positionAttributeLocation;
+var colorUniformLocation;
+var selectedColor = { r: 0, g: 0, b: 0 };
+var saveData; // TODO: Fitur save, semua shape dan color disimpan kesini
+var allLineData; // TODO: Array of all line [[lineData],[lineData]]
+var lineData; // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
+var allSquareData; // TODO: Array of all line [[squareData],[squareData]]
+var squareData; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allRectangleData = []; // TODO: Array of all line [[rectangleData],[rectangleData]]
+var rectangleData = []; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allPolygonData = []; // TODO: Array of all polygon [[polygonData],[polygonData]]
 var polygonData = []; // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
-var canvasWidth
-var canvasHeight
+var canvasWidth;
+var canvasHeight;
 
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
@@ -51,10 +51,10 @@ function createProgram(gl, vertexShader, fragmentShader) {
 
 function resizeCanvasToDisplaySize(canvas, multiplier) {
   multiplier = multiplier || 1;
-  const width  = canvas.clientWidth  * multiplier | 0;
-  const height = canvas.clientHeight * multiplier | 0;
-  if (canvas.width !== width ||  canvas.height !== height) {
-    canvas.width  = width;
+  const width = (canvas.clientWidth * multiplier) | 0;
+  const height = (canvas.clientHeight * multiplier) | 0;
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
     canvas.height = height;
     return true;
   }
@@ -68,127 +68,169 @@ function getRelativeMousePosition(event) {
   return {
     x: event.clientX - rect.left,
     y: event.clientY - rect.top,
-  }
+  };
 }
 
-function getMouseCoordinate(event){
+function getMouseCoordinate(event) {
   var pos = getRelativeMousePosition(event);
   return {
-     x : pos.x / canvasWidth  *  2 - 1,
-     y : pos.y / canvasHeight * -2 + 1,    
-  }
+    x: (pos.x / canvasWidth) * 2 - 1,
+    y: (pos.y / canvasHeight) * -2 + 1,
+  };
 }
 
-function getColorInHex(e){
-  console.log(e.target.value)
-  hex = e.target.value
+function getColorInHex(e) {
+  console.log(e.target.value);
+  hex = e.target.value;
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  var rgbData = result ?  {
-    r: parseInt(result[1], 16)/255,
-    g: parseInt(result[2], 16)/255,
-    b: parseInt(result[3], 16)/255
-  } : null;
-  selectedColor = rgbData
+  var rgbData = result
+    ? {
+        r: parseInt(result[1], 16) / 255,
+        g: parseInt(result[2], 16) / 255,
+        b: parseInt(result[3], 16) / 255,
+      }
+    : null;
+  selectedColor = rgbData;
 }
 
-function mouseClicked(pos){ // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
+function mouseClicked(pos) {
+  // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
   // Mode memindah vertex
   // if (moveMode) {TODO : Ambil moveMode dari input}
   // Mode Membuat Shape
   // Line TODO: Afif
-  if (selectedShape == 'line'){
-    console.log('line')
+  if (selectedShape == "line") {
+    console.log("line");
   }
   // Square TODO: Ahan
-  if (selectedShape == 'square'){
-    console.log('square')
+  if (selectedShape == "square") {
+    console.log("square");
+    // var squareData // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+    var width = 0.5;
+
+    squareData.push(pos.x);
+    squareData.push(pos.y);
+
+    squareData.push(pos.x + width);
+    squareData.push(pos.y);
+
+    squareData.push(pos.x);
+    squareData.push(pos.y + width);
+
+    squareData.push(pos.x + width);
+    squareData.push(pos.y + width);
+    console.log(squareData);
+    render();
   }
   // Rectangle (Adjustable) TODO: Chris
-  if (selectedShape == 'rectangle'){
-    console.log('rectangle')
-    console.log(pos)
+  if (selectedShape == "rectangle") {
+    console.log("rectangle");
+    console.log(pos);
     countRectangleVertex--;
-    if(countRectangleVertex == 0){
-      rectangleData[2] = pos.x
-      rectangleData[4] = pos.x
-      rectangleData[5] = pos.y
-      rectangleData[7] = pos.y
-      console.log(rectangleData)
+    if (countRectangleVertex == 0) {
+      rectangleData[2] = pos.x;
+      rectangleData[4] = pos.x;
+      rectangleData[5] = pos.y;
+      rectangleData[7] = pos.y;
+      console.log(rectangleData);
       render();
     } else {
-      for(var i = 0; i < 4; i++){
-        rectangleData.push(pos.x)
-        rectangleData.push(pos.y)
+      for (var i = 0; i < 4; i++) {
+        rectangleData.push(pos.x);
+        rectangleData.push(pos.y);
       }
     }
-
   }
   // Polygon TODO: Alex
-  if (selectedShape == 'polygon'){
-    console.log('polygon')
-    console.log(pos)
+  if (selectedShape == "polygon") {
+    console.log("polygon");
+    console.log(pos);
     countPolygonVertex--;
-    console.log(countPolygonVertex)
-    if (countPolygonVertex == 0){
-      polygonData.push(pos.x)
-      polygonData.push(pos.y)
-      console.log(polygonData)
+    console.log(countPolygonVertex);
+    if (countPolygonVertex == 0) {
+      polygonData.push(pos.x);
+      polygonData.push(pos.y);
+      console.log(polygonData);
       render();
     } else {
-      polygonData.push(pos.x)
-      polygonData.push(pos.y)
+      polygonData.push(pos.x);
+      polygonData.push(pos.y);
     }
-    
-
   }
   // render(gl,pos)
 }
-function render(){ // TODO: Ambil vertex data, create array, gambar sesuai bentuk
+function render() {
+  // TODO: Ambil vertex data, create array, gambar sesuai bentuk
 
   // Line TODO: Afif
-  if (selectedShape == 'line'){
-    console.log('line')
+  if (selectedShape == "line") {
+    console.log("line");
   }
   // Square TODO: Ahan
-  if (selectedShape == 'square'){
-    console.log('square')
+  if (selectedShape == "square") {
+    console.log("square");
+    positions = new Float32Array(squareData);
+    gl.uniform4f(
+      colorUniformLocation,
+      selectedColor.r,
+      selectedColor.g,
+      selectedColor.b,
+      1
+    );
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+    count = 4;
+    gl.drawArrays(gl.TRIANGLES, 0, count);
+    allSquareData.push([squareData, selectedColor]); // SAVE TO DATA
+    squareData = [];
   }
   // Rectangle (Adjustable) TODO: Chris
-  if (selectedShape == 'rectangle'){
-    positions = new Float32Array(rectangleData)
-    gl.uniform4f(colorUniformLocation, selectedColor.r, selectedColor.g, selectedColor.b, 1);
+  if (selectedShape == "rectangle") {
+    positions = new Float32Array(rectangleData);
+    gl.uniform4f(
+      colorUniformLocation,
+      selectedColor.r,
+      selectedColor.g,
+      selectedColor.b,
+      1
+    );
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
     count = 4;
     countRectangleVertex = 2;
     gl.drawArrays(gl.TRIANGLE_FAN, 0, count);
-    allRectangleData.push([rectangleData, selectedColor, 4]) // SAVE TO DATA
-    rectangleData = []
+    allRectangleData.push([rectangleData, selectedColor, 4]); // SAVE TO DATA
+    rectangleData = [];
   }
   // Polygon TODO: Alex
-  if (selectedShape == 'polygon'){
-    positions = new Float32Array(polygonData)
-    gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
+  if (selectedShape == "polygon") {
+    positions = new Float32Array(polygonData);
+    gl.uniform4f(
+      colorUniformLocation,
+      selectedColor.r,
+      selectedColor.g,
+      selectedColor.b,
+      1
+    );
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
-    count = polygonVertex
-    countPolygonVertex = polygonVertex
+    count = polygonVertex;
+    countPolygonVertex = polygonVertex;
     gl.drawArrays(gl.TRIANGLE_FAN, 0, count);
-    allPolygonData.push([polygonData,selectedColor,polygonVertex]) // SAVE TO DATA
-    polygonData = []
+    allPolygonData.push([polygonData, selectedColor, polygonVertex]); // SAVE TO DATA
+    polygonData = [];
   }
 
-
-  // How to draw 
+  // How to draw
   // 1. Bikin posisinya, posisinya dependen sama lokasi cursor, yaitu pos
-  
+
   // var positions = [
   //   pos.x, pos.y,
   //   pos.x, pos.y + 0.3,
   //   pos.x + 0.2, pos.y,
   //   pos.x + 0.2, pos.y+0.3,
   // ];
-  
+
   // var positions3=[
   //   pos.x,pos.y,
   //   pos.x+0.5,pos.y
@@ -197,10 +239,10 @@ function render(){ // TODO: Ambil vertex data, create array, gambar sesuai bentu
   // 2. Ubah Posisi ke Array Float32
   // positions3 = new Float32Array(positions)
   // console.log(positions)
-  
+
   // 3. warna, sudah sesuai sama data di input
   // gl.uniform4f(colorUniformLocation,selectedColor.r,selectedColor.g,selectedColor.b, 1);
-  
+
   // 4. Bind Buffer
   // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
@@ -212,33 +254,37 @@ function render(){ // TODO: Ambil vertex data, create array, gambar sesuai bentu
   // primitive Type ini ada berbagai macam bentuk, bisa cek di dokumentasi
   // var offset = 0;
   // var count = 3;
-  
-  // 7. Gambar 
+
+  // 7. Gambar
   // gl.drawArrays(primitiveType, offset, count);
 }
 
 window.onload = function init() {
   // SETUP WEBGL
   var canvas = document.querySelector("#main-canvas");
-  gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
+  gl = canvas.getContext("webgl", { preserveDrawingBuffer: true });
   // var gl = WebGLUtils.setupWebGL(canvas,{preserveDrawingBuffer: true});
   if (!gl) {
-    alert ("WebGL is not available");
+    alert("WebGL is not available");
   }
 
-   // Get the strings for our GLSL shaders
-   var vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
-   var fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
- 
-   // create GLSL shaders, upload the GLSL source, compile the shaders
-   var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-   var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
- 
-   // Link the two shaders into a program
-   var program = createProgram(gl, vertexShader, fragmentShader);
+  // Get the strings for our GLSL shaders
+  var vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
+  var fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
+
+  // create GLSL shaders, upload the GLSL source, compile the shaders
+  var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+  var fragmentShader = createShader(
+    gl,
+    gl.FRAGMENT_SHADER,
+    fragmentShaderSource
+  );
+
+  // Link the two shaders into a program
+  var program = createProgram(gl, vertexShader, fragmentShader);
   // var program = initShaders(gl, "vertex-shader-2d", "fragment-shader-2d");
   gl.useProgram(program);
-  
+
   resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   gl.clearColor(0, 0, 0, 0);
@@ -252,8 +298,8 @@ window.onload = function init() {
   gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionAttributeLocation);
 
-  canvasWidth = gl.canvas.width
-  canvasHeight = gl.canvas.height
+  canvasWidth = gl.canvas.width;
+  canvasHeight = gl.canvas.height;
 
   // EVENT HANDLER
   var shape = document.getElementById("shape");
@@ -263,26 +309,26 @@ window.onload = function init() {
 
   var color = document.getElementById("color-picker");
   color.addEventListener("change", function (e) {
-    getColorInHex(e)
+    getColorInHex(e);
   });
-  
+
   var polygonVertexInput = document.getElementById("polygon-vertex");
   polygonVertexInput.addEventListener("change", function (e) {
-    polygonVertex = e.target.value
-    countPolygonVertex = polygonVertex
-    polygonData = []
+    polygonVertex = e.target.value;
+    countPolygonVertex = polygonVertex;
+    polygonData = [];
   });
 
   // EVENT HANDLER
 
   var drawing = false;
   canvas.addEventListener("click", (event) => {
-    drawing = true
-    console.log(event)
-    let pos = getMouseCoordinate(event)
-    console.log(pos)
-    mouseClicked(pos)
+    drawing = true;
+    console.log(event);
+    let pos = getMouseCoordinate(event);
+    console.log(pos);
+    mouseClicked(pos);
   });
-}
+};
 
 // main();
