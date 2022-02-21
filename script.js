@@ -18,8 +18,8 @@ var selectedColor = { r: 0, g: 0, b: 0 };
 
 var saveData; // TODO: Fitur save, semua shape dan color disimpan kesini
 
-var allLineData; // TODO: Array of all line [[lineData],[lineData]]
-var lineData; // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
+var allLineData = []; // TODO: Array of all line [[lineData],[lineData]]
+var lineData = []; // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
 
 var allSquareData = []; // TODO: Array of all line [[squareData],[squareData]]
 var squareData = []; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
@@ -116,6 +116,17 @@ function mouseClicked(pos) {
   // Line TODO: Afif
   if (selectedShape == "line") {
     console.log("line");
+    var widthx = (width / canvasWidth) * 720;
+    var widthy = (width / canvasHeight) * 720;
+
+    lineData.push(pos.x);
+    lineData.push(pos.y);
+
+    lineData.push(pos.x + widthx);
+    lineData.push(pos.y + widthy);
+
+    console.log(lineData);
+    render();
   }
   // Square TODO: Ahan
   if (selectedShape == "square") {
@@ -180,6 +191,21 @@ function render() {
   // Line TODO: Afif
   if (selectedShape == "line") {
     console.log("line");
+
+    positions = new Float32Array(lineData);
+    gl.uniform4f(
+      colorUniformLocation,
+      selectedColor.r,
+      selectedColor.g,
+      selectedColor.b,
+      1
+    );
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+    count = 4;
+    gl.drawArrays(gl.LINE_STRIP, 0, count);
+    allLineData.push([lineData, selectedColor]); // SAVE TO DATA
+    lineData = [];
   }
   // Square TODO: Ahan
   if (selectedShape == "square") {
