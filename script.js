@@ -6,6 +6,7 @@ var countClick = 0
 var selectedShape = 'line'
 var polygonVertex = 3;
 var countPolygonVertex = 3;
+var countRectangleVertex = 2;
 var positionAttributeLocation
 var colorUniformLocation
 var selectedColor = {r:0,g:0,b:0}
@@ -14,8 +15,8 @@ var allLineData // TODO: Array of all line [[lineData],[lineData]]
 var lineData // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
 var allSquareData // TODO: Array of all line [[squareData],[squareData]]
 var squareData // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
-var allRectangleData // TODO: Array of all line [[rectangleData],[rectangleData]]
-var rectangleData// TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allRectangleData = []// TODO: Array of all line [[rectangleData],[rectangleData]]
+var rectangleData = []// TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
 var allPolygonData = [];  // TODO: Array of all polygon [[polygonData],[polygonData]]
 var polygonData = []; // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
 var canvasWidth
@@ -105,6 +106,22 @@ function mouseClicked(pos){ // TODO: Ambil vertex dari pos, cari pasangannya, pu
   // Rectangle (Adjustable) TODO: Chris
   if (selectedShape == 'rectangle'){
     console.log('rectangle')
+    console.log(pos)
+    countRectangleVertex--;
+    if(countRectangleVertex == 0){
+      rectangleData[2] = pos.x
+      rectangleData[4] = pos.x
+      rectangleData[5] = pos.y
+      rectangleData[7] = pos.y
+      console.log(rectangleData)
+      render();
+    } else {
+      for(var i = 0; i < 4; i++){
+        rectangleData.push(pos.x)
+        rectangleData.push(pos.y)
+      }
+    }
+
   }
   // Polygon TODO: Alex
   if (selectedShape == 'polygon'){
@@ -138,7 +155,14 @@ function render(){ // TODO: Ambil vertex data, create array, gambar sesuai bentu
   }
   // Rectangle (Adjustable) TODO: Chris
   if (selectedShape == 'rectangle'){
-    console.log('rectangle')
+    positions = new Float32Array(rectangleData)
+    gl.uniform4f(colorUniformLocation, selectedColor.r, selectedColor.g, selectedColor.b, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+    count = 4;
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, count);
+    allRectangleData.push([rectangleData, selectedColor, 4]) // SAVE TO DATA
+    polygonData = []
   }
   // Polygon TODO: Alex
   if (selectedShape == 'polygon'){
@@ -247,14 +271,17 @@ window.onload = function init() {
     countPolygonVertex = polygonVertex
     polygonData = []
   });
+
   // EVENT HANDLER
+
+  var drawing = false;
   canvas.addEventListener("click", (event) => {
+    drawing = true
     console.log(event)
     let pos = getMouseCoordinate(event)
     console.log(pos)
     mouseClicked(pos)
   });
-  
 }
 
 // main();
