@@ -160,9 +160,10 @@ function render(){ // TODO: Ambil vertex data, create array, gambar sesuai bentu
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
     count = 4;
+    countRectangleVertex = 2;
     gl.drawArrays(gl.TRIANGLE_FAN, 0, count);
     allRectangleData.push([rectangleData, selectedColor, 4]) // SAVE TO DATA
-    polygonData = []
+    rectangleData = []
   }
   // Polygon TODO: Alex
   if (selectedShape == 'polygon'){
