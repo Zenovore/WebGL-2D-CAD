@@ -1,26 +1,39 @@
 var gl;
+
 var positionBuffer;
 var colorBuffer;
 const maxVertex = 10000;
 var countClick = 0;
+
 var selectedShape = "line";
+
 var polygonVertex = 3;
 var countPolygonVertex = 3;
+
 var countRectangleVertex = 2;
+
 var positionAttributeLocation;
 var colorUniformLocation;
 var selectedColor = { r: 0, g: 0, b: 0 };
+
 var saveData; // TODO: Fitur save, semua shape dan color disimpan kesini
+
 var allLineData; // TODO: Array of all line [[lineData],[lineData]]
 var lineData; // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
-var allSquareData; // TODO: Array of all line [[squareData],[squareData]]
-var squareData; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+
+var allSquareData = []; // TODO: Array of all line [[squareData],[squareData]]
+var squareData = []; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+
 var allRectangleData = []; // TODO: Array of all line [[rectangleData],[rectangleData]]
 var rectangleData = []; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+
 var allPolygonData = []; // TODO: Array of all polygon [[polygonData],[polygonData]]
 var polygonData = []; // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
+
 var canvasWidth;
 var canvasHeight;
+
+var width = 0.5;
 
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
@@ -105,20 +118,20 @@ function mouseClicked(pos) {
   // Square TODO: Ahan
   if (selectedShape == "square") {
     console.log("square");
-    // var squareData // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
-    var width = 0.5;
+    var widthx = (width / canvasWidth) * 720;
+    var widthy = (width / canvasHeight) * 720;
 
     squareData.push(pos.x);
     squareData.push(pos.y);
 
-    squareData.push(pos.x + width);
+    squareData.push(pos.x + widthx);
     squareData.push(pos.y);
 
     squareData.push(pos.x);
-    squareData.push(pos.y + width);
+    squareData.push(pos.y + widthy);
 
-    squareData.push(pos.x + width);
-    squareData.push(pos.y + width);
+    squareData.push(pos.x + widthx);
+    squareData.push(pos.y + widthy);
     console.log(squareData);
     render();
   }
@@ -180,7 +193,7 @@ function render() {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
     count = 4;
-    gl.drawArrays(gl.TRIANGLES, 0, count);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, count);
     allSquareData.push([squareData, selectedColor]); // SAVE TO DATA
     squareData = [];
   }
