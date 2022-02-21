@@ -10,6 +10,9 @@ var selectedShape = "line";
 var polygonVertex = 3;
 var countPolygonVertex = 3;
 
+var lineVertex = 2;
+var countLineVertex = 2;
+
 var countRectangleVertex = 2;
 
 var positionAttributeLocation;
@@ -114,17 +117,26 @@ function mouseClicked(pos) {
   // Line TODO: Afif
   if (selectedShape == "line") {
     console.log("line");
-    var widthx = (width / canvasWidth) * 720;
-    var widthy = (width / canvasHeight) * 720;
+    // var widthx = (width / canvasWidth) * 720;
+    // var widthy = (width / canvasHeight) * 720;
 
-    lineData.push(pos.x);
-    lineData.push(pos.y);
+    // lineData.push(pos.x);
+    // lineData.push(pos.y);
 
-    lineData.push(pos.x + widthx);
-    lineData.push(pos.y + widthy);
+    // lineData.push(pos.x + widthx);
+    // lineData.push(pos.y + widthy);
 
-    console.log(lineData);
-    render();
+    countLineVertex--;
+    console.log(countLineVertex);
+    if (countLineVertex == 0) {
+      lineData.push(pos.x);
+      lineData.push(pos.y);
+      console.log(lineData);
+      render();
+    } else {
+      lineData.push(pos.x);
+      lineData.push(pos.y);
+    }
   }
   // Square TODO: Ahan
   if (selectedShape == "square") {
@@ -200,9 +212,10 @@ function render() {
     );
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
-    count = 4;
+    count = lineVertex;
+    countLineVertex = lineVertex;
     gl.drawArrays(gl.LINE_STRIP, 0, count);
-    allLineData.push([lineData, selectedColor]); // SAVE TO DATA
+    allLineData.push([lineData, selectedColor, lineVertex]); // SAVE TO DATA
     lineData = [];
   }
   // Square TODO: Ahan
