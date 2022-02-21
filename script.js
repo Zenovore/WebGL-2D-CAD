@@ -16,8 +16,6 @@ var positionAttributeLocation;
 var colorUniformLocation;
 var selectedColor = { r: 0, g: 0, b: 0 };
 
-var saveData; // TODO: Fitur save, semua shape dan color disimpan kesini
-
 var allLineData = []; // TODO: Array of all line [[lineData],[lineData]]
 var lineData = []; // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
 
@@ -367,6 +365,45 @@ window.onload = function init() {
     width = (10 * temp) / 1000 || 0.5;
   });
 
+  const saveData = () => {
+    const data = {
+      allLineData,
+      allSquareData,
+      allRectangleData,
+      allPolygonData,
+    };
+    const a = document.createElement("a");
+    const file = new Blob([JSON.stringify(data)], { type: "json" });
+    a.href = URL.createObjectURL(file);
+    a.download = "WebGL2D.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  var saveButton = document.getElementById("save");
+  saveButton.addEventListener("click", saveData);
+
+  const loadProgress = (e) => {
+    const file = e.target.files[0];
+    var reader = new FileReader();
+    reader.addEventListener("load", function (e) {
+      let data = e.target.result;
+      data = JSON.parse(data);
+      allLineData = data.allLineData;
+      allSquareData = data.squareColors;
+      allRectangleData = data.allRectangleData;
+      allPolygonData = data.allPolygonData;
+      render();
+    });
+    reader.readAsBinaryString(file);
+  };
+
+  let loadButton = document.getElementById("load");
+  loadButton.addEventListener("change", loadProgress);
+
+  var clrbtn = document.getElementById("clrbtn");
+  clrbtn.addEventListener("click", function () {
+    location.reload();
+  });
   // EVENT HANDLER
 
   var drawing = false;
