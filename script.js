@@ -35,6 +35,7 @@ var canvasHeight;
 
 var width = 0.5;
 
+// ================= SHADER AND PROGRAM =================
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
   gl.shaderSource(shader, source);
@@ -62,6 +63,7 @@ function createProgram(gl, vertexShader, fragmentShader) {
   gl.deleteProgram(program);
 }
 
+// ================= CANVAS AND POSITION =================
 function resizeCanvasToDisplaySize(canvas, multiplier) {
   multiplier = multiplier || 1;
   const width = (canvas.clientWidth * multiplier) | 0;
@@ -272,6 +274,7 @@ function render() {
   // gl.drawArrays(primitiveType, offset, count);
 }
 
+// ================= SETUP =================
 window.onload = function init() {
   // SETUP WEBGL
   var canvas = document.querySelector("#main-canvas");
@@ -330,6 +333,12 @@ window.onload = function init() {
     polygonVertex = e.target.value;
     countPolygonVertex = polygonVertex;
     polygonData = [];
+  });
+
+  var setWidth = document.getElementById("width");
+  setWidth.addEventListener("change", function (e) {
+    const temp = parseInt(e.target.value);
+    width = (10 * temp) / 1000 || 0.5;
   });
 
   // EVENT HANDLER
