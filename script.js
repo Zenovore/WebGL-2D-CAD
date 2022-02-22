@@ -188,32 +188,41 @@ function loadLine() {
   selectedShape = "line";
   allLineData.map((item, index) => {
     lineData = item[0];
+    selectedColor = item[1];
     render();
   });
+  selectedColor = { r: 0, g: 0, b: 0 };
 }
 
 function loadSquare() {
   selectedShape = "square";
   allSquareData.map((item, index) => {
     squareData = item[0];
+    selectedColor = item[1];
     render();
   });
+  selectedColor = { r: 0, g: 0, b: 0 };
 }
 
 function loadRectangle() {
   selectedShape = "rectangle";
   allRectangleData.map((item, index) => {
     rectangleData = item[0];
+    selectedColor = item[1];
     render();
   });
+  selectedColor = { r: 0, g: 0, b: 0 };
 }
 
 function loadPolygon() {
   selectedShape = "polygon";
   allPolygonData.map((item, index) => {
     polygonData = item[0];
+    selectedColor = item[1];
     render();
   });
+  selectedColor = { r: 0, g: 0, b: 0 };
+  selectedShape = "line";
 }
 
 function render() {
@@ -429,6 +438,8 @@ window.onload = function init() {
       allSquareData = data.allSquareData;
       allRectangleData = data.allRectangleData;
       allPolygonData = data.allPolygonData;
+
+      console.log(allLineData);
 
       loadLine();
       loadSquare();
