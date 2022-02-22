@@ -111,21 +111,9 @@ function getColorInHex(e) {
 
 function mouseClicked(pos) {
   // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
-  // Mode memindah vertex
-  // if (moveMode) {TODO : Ambil moveMode dari input}
-  // Mode Membuat Shape
   // Line TODO: Afif
   if (selectedShape == "line") {
     console.log("line");
-    // var widthx = (width / canvasWidth) * 720;
-    // var widthy = (width / canvasHeight) * 720;
-
-    // lineData.push(pos.x);
-    // lineData.push(pos.y);
-
-    // lineData.push(pos.x + widthx);
-    // lineData.push(pos.y + widthy);
-
     countLineVertex--;
     console.log(countLineVertex);
     if (countLineVertex == 0) {
@@ -195,13 +183,44 @@ function mouseClicked(pos) {
   }
   // render(gl,pos)
 }
+
+function loadLine() {
+  selectedShape = "line";
+  allLineData.map((item, index) => {
+    lineData = item[0];
+    render();
+  });
+}
+
+function loadSquare() {
+  selectedShape = "square";
+  allSquareData.map((item, index) => {
+    squareData = item[0];
+    render();
+  });
+}
+
+function loadRectangle() {
+  selectedShape = "rectangle";
+  allRectangleData.map((item, index) => {
+    rectangleData = item[0];
+    render();
+  });
+}
+
+function loadPolygon() {
+  selectedShape = "polygon";
+  allPolygonData.map((item, index) => {
+    polygonData = item[0];
+    render();
+  });
+}
+
 function render() {
   // TODO: Ambil vertex data, create array, gambar sesuai bentuk
 
   // Line TODO: Afif
   if (selectedShape == "line") {
-    console.log("line");
-
     positions = new Float32Array(lineData);
     gl.uniform4f(
       colorUniformLocation,
@@ -385,6 +404,9 @@ window.onload = function init() {
       allRectangleData,
       allPolygonData,
     };
+
+    console.log(data);
+
     const a = document.createElement("a");
     const file = new Blob([JSON.stringify(data)], { type: "json" });
     a.href = URL.createObjectURL(file);
@@ -398,14 +420,20 @@ window.onload = function init() {
   const loadProgress = (e) => {
     const file = e.target.files[0];
     var reader = new FileReader();
+
     reader.addEventListener("load", function (e) {
       let data = e.target.result;
       data = JSON.parse(data);
+
       allLineData = data.allLineData;
-      allSquareData = data.squareColors;
+      allSquareData = data.allSquareData;
       allRectangleData = data.allRectangleData;
       allPolygonData = data.allPolygonData;
-      render();
+
+      loadLine();
+      loadSquare();
+      loadRectangle();
+      loadPolygon();
     });
     reader.readAsBinaryString(file);
   };
