@@ -38,6 +38,7 @@ var width = 0.5;
 
 var movingMode = false;
 var movingData;
+var changeColorMode = false;
 
 // ================= SHADER AND PROGRAM =================
 function createShader(gl, type, source) {
@@ -110,6 +111,55 @@ function getColorInHex(e) {
       }
     : null;
   selectedColor = rgbData;
+}
+
+function pointIsInPoly(p, polygon) {
+  var isInside = false;
+  var minX =polygon[0]
+  var minY =polygon[1]
+  var maxX =polygon[0]
+  var maxY =polygon[1]
+
+  for (let k = 2 ; k<=polygon.length-2;k+= 2){
+    minX = Math.min(polygon[k], minX);
+    maxX = Math.max(polygon[k], maxX);
+    minY = Math.min(polygon[k+1], minY);
+    maxY = Math.max(polygon[k+1], maxY);
+  }
+
+  if (p.x < minX || p.x > maxX || p.y < minY || p.y > maxY) {
+      return false;
+  }
+
+  
+  var i = 0, j = polygon.length - 2;
+  for ( i,j; i<polygon.length; j = i+=2){
+    if (j+2 == polygon.length && i != 0){
+      j = 0
+    } else if (j != polygon.length -2) {
+      j += 2
+    }    
+    if ( (polygon[i+1] > p.y) != (polygon[j+1] > p.y) &&
+      p.x < (polygon[j] - polygon[i]) * (p.y - polygon[i+1]) / (polygon[j+1] - polygon[i+1]) + polygon[i] ) {
+    isInside = !isInside;
+    }
+  }
+
+  return isInside;
+}
+
+function getPolygonIndex(event){
+  let vertexLocation = getMouseCoordinate(event);
+  let index = -1;
+  for (let i = 0; i < allPolygonData.length; i++){
+    if (pointIsInPoly(vertexLocation,allPolygonData[i][0])){
+      index = i
+    }
+  }
+  if (index != -1){
+    allPolygonData[index][1] = selectedColor
+    render()
+  }
 }
 
 function getCartesianDistance(x1,y1,x2,y2){
@@ -505,11 +555,32 @@ window.onload = function init() {
 
   var drawing = false;
 
-  var moveButton = document.getElementById("moving-mode");
-  moveButton.addEventListener("click", function () {
-    movingMode = !movingMode
-  });
+  // var moveButton = document.getElementById("moving-mode");
+  // moveButton.addEventListener("click", function () {
+  //   movingMode = !movingMode
+  // });
+  
+  // var moveButton = document.getElementById("polygon-change-mode");
+  // moveButton.addEventListener("click", function () {
+  //   changeColorMode = !changeColorMode
+  // });
+  var radioButton = document.getElementById("drawing-mode");
+  radioButton.addEventListener("click", function () {
+    movingMode = false;
+    changeColorMode = false;
+  }); 
 
+  var radioButton1 = document.getElementById("move-mode");
+  radioButton1.addEventListener("click", function () {
+    movingMode = true;
+    changeColorMode = false;
+  });  
+
+  var radioButton2 = document.getElementById("change-color-mode");
+  radioButton2.addEventListener("click", function () {
+    movingMode = false;
+    changeColorMode = true;
+  });  
 
   canvas.addEventListener("mousedown", (event) => {
     if (movingMode){
@@ -527,12 +598,15 @@ window.onload = function init() {
     }
   });
   canvas.addEventListener("click", (event) => {
-    if (!movingMode){
+    if (!movingMode && !changeColorMode){
       drawing = true;
       console.log(event);
       let pos = getMouseCoordinate(event);
       console.log(pos);
       mouseClicked(pos);
+    } else if(changeColorMode){
+      getPolygonIndex(event)
+      console.log('masuk change color')
     }
   });
 };
