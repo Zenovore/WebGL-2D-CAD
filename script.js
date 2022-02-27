@@ -113,7 +113,7 @@ function getColorInHex(e) {
   selectedColor = rgbData;
 }
 
-function pointIsInPoly(p, polygon) {
+function checkPointInsidePolygon(p, polygon) {
   var isInside = false;
   var minX =polygon[0]
   var minY =polygon[1]
@@ -152,7 +152,7 @@ function getPolygonIndex(event){
   let vertexLocation = getMouseCoordinate(event);
   let index = -1;
   for (let i = 0; i < allPolygonData.length; i++){
-    if (pointIsInPoly(vertexLocation,allPolygonData[i][0])){
+    if (checkPointInsidePolygon(vertexLocation,allPolygonData[i][0])){
       index = i
     }
   }
