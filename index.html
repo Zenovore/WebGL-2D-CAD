@@ -1,60 +1,88 @@
 <html>
   <head>
     <title>2D WebGL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="flex flex-row">
-      <canvas id="main-canvas"></canvas>
+      <canvas id="main-canvas" class="w-3/4 h-screen"></canvas>
       <!-- MENU -->
-      <div class="bg-gray w-full">
+      <div
+        class="w-1/4 p-10 flex flex-col space-y-4"
+        style="background-color: #5d8bf4"
+      >
         <!-- Colour Picker -->
-        <div class="flex flex-row">
-          Choose Color :
+        <div class="flex flex-row w-full justify-between">
+          <p class="w-1/2">Choose Color</p>
           <input type="color" id="color-picker" />
         </div>
 
         <!-- Shape Picker -->
-        <div class="flex flex-row">
-          <label for="cars">Choose a shape :</label>
-          <select id="shape" name="shapes">
+        <div class="flex flex-row justify-between">
+          <p class="w-1/2" for="cars">Choose a shape</p>
+          <select class="w-16" id="shape" name="shapes">
             <option value="line">Line</option>
             <option value="square">Square</option>
             <option value="rectangle">Rectangle</option>
             <option value="polygon">Polygon</option>
           </select>
         </div>
+
         <!-- Polygon Node -->
-        <div class="flex flex-row">
-          Polygon Node
-          <input id="polygon-vertex" type="number" value="3" />
+        <div class="flex flex-row justify-between">
+          <p class="w-1/2">Polygon Node</p>
+          <input
+            id="polygon-vertex"
+            type="number"
+            value="3"
+            class="w-16 p-1 rounded-lg"
+          />
         </div>
+
         <!-- TODO: Item Width -->
-        <div class="flex flex-row">
-          Item Width
+        <div class="flex flex-row items-center justify-between">
+          <p>Item Width</p>
           <input type="range" class="form-range" id="width" />
         </div>
+
         <!-- TODO: Move Vertex -->
-        <div class="flex flex-row">
-          <input id="moving-mode" type="checkbox" />
-          Move Vertex
+        <div class="flex flex-row items-center justify-between">
+          <p>Move Vertex</p>
+          <input id="moving-mode" type="checkbox" class="w-6 h-6" />
         </div>
+
         <!-- TODO: Save & Load -->
-        <div>
-          <label class="form-label">Load file</label>
+        <div class="flex flex-row justify-between items-center">
+          <p class="w-1/2">Load file</p>
           <input
-            class="form-control form-control-sm"
+            class="w-1/2 self-end custom-file-input"
             type="file"
             id="load"
             accept=".json,application/json"
           />
         </div>
-        <div class="flex flex-row">
-          <button id="save">Save</button>
-        </div>
-        <!-- TODO: Clear Canvas -->
-        <div class="flex flex-row">
-          <button id="clrbtn">Clear canvas</button>
+
+        <div class="flex flex-row justify-between space-x-4 mt-12">
+          <div
+            class="bg-red-500 px-4 py-2 rounded-xl w-1/2 text-center hover:opacity-50 cursor-pointer"
+          >
+            <button id="save"><p>Save</p></button>
+          </div>
+
+          <!-- TODO: Clear Canvas -->
+          <div
+            class="bg-blue-400 px-4 py-2 rounded-xl w-1/2 text-center hover:opacity-50 cursor-pointer"
+            style="background-color: #2d31fa"
+          >
+            <button id="clrbtn"><p>Clear canvas</p></button>
+          </div>
         </div>
       </div>
     </div>
