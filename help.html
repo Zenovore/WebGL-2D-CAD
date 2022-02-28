@@ -1,0 +1,86 @@
+<html lang="en">
+  <head>
+    <title>HELP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div
+      class="w-full flex flex-row items-center justify-center py-8"
+      style="background-color: #182955"
+    >
+      <div
+        class="w-5/12 bg-white rounded-2xl flex flex-col space-y-3"
+        style="box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px"
+      >
+        <div
+          class="w-full bg-yellow-400 px-4 py-3 text-center rounded-t-xl"
+          style="background-color: #2d31fa"
+        >
+          <p style="font-size: 1.2rem">Panduan Pemakaian</p>
+        </div>
+        <div class="w-full px-8 py-2 flex flex-col space-y-3">
+          <p class="text-black">
+            1. Untuk memulai gambar, pilihlah opsi "shape" yang diinginkan.
+          </p>
+          <p class="text-black">
+            2. Klik pada canvas simpul-simpul yang akan membentuk gambar yang
+            anda pilih sebelumnya
+          </p>
+          <p class="text-black">
+            3. Untuk pembuatan line/garis, diperlukan dua simpul. Garis akan
+            dibentuk dengan menghubungkan dua simpul tadi. jika lebih dari 2
+            simpul yang diberikan maka akan dibuat garis baru lagi.
+          </p>
+          <p class="text-black">
+            4. Untuk pembuatan square/persegi, diperlukan dua simpul. Persegi
+            akan dibentuk dengan menghubungkan kedua simpul tadi dengan mencari
+            jarak terpendek sebagai diagonal dari persegi, kemudian membentuk 2
+            simpul lainnya yang tegak lurus dengan kedua simpul pertama.
+          </p>
+          <p class="text-black">
+            5. Untuk pembuatan rectangle/persegi panjang, diperlukan dua simpul.
+            Persegi panjang akan dibentuk dengan menghubungkan kedua simpul tadi
+            sebagai diagonal dari persegi panjang, kemudian membentuk 2 simpul
+            lainnya yang tegak lurus dengan kedua simpul pertama.
+          </p>
+          <p class="text-black">
+            6. Untuk pembuatan polygon/segi-n, diperlukan minimal 3 simpul.
+            Polygon dibuat dengan menghubungkan semua simpul yang diberikan
+            dengan maksimal jumlah simpul tidak terbatas. jika ingin membuat
+            polygon baru, klik tombol "init new polygon".
+          </p>
+          <p class="text-black">
+            7. Untuk mengubah warna polygon, diperlukan minimal 1 polygon. warna
+            polygon yang diganti adalah warna dari polygon terakhir yang dibuat
+            (tidak bisa mengganti warna polygon sebelumnya).
+          </p>
+          <p class="text-black">
+            8. Untuk mengubah ukuran persegi, klik salah satu simpul dari
+            persegi lalu klik kembali untuk memindahkan simpul tadi posisi
+            tersebut. persegi akan dibuat dengan simpul tersebut dengan simpul
+            yang berada diagonalnya.
+          </p>
+          <p class="text-black">
+            9. Untuk mengubah panjang garis ataupun merubah posisi simpulnya,
+            klik dan tahan (drag) salah satu simpul dari line kemudian lepaskan
+            klik diposisi di mana simpul ingin diletakkan.
+          </p>
+          <p class="text-black">
+            10. Untuk menyimpan hasil gambar, klik tombol 'Export'
+          </p>
+          <p class="text-black">
+            11. Untuk membuka gambar yang telah disimpan, klik tombol import dan
+            pilih file yang ingin anda buka
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
