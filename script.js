@@ -408,6 +408,12 @@ function mouseClicked(pos) {
   }
   // render(gl,pos)
 }
+function emptyData(){
+  lineData = [];
+  squareData = [];
+  rectangleData = [];
+  polygonData = [];
+}
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
@@ -616,6 +622,7 @@ window.onload = function init() {
     movingMode = false;
     changeColorMode = false;
     changeSquare = false;
+    emptyData()
   }); 
 
   var radioButton1 = document.getElementById("move-mode");
@@ -623,6 +630,7 @@ window.onload = function init() {
     movingMode = true;
     changeColorMode = false;
     changeSquare = false;
+    emptyData()
   });  
 
   var radioButton2 = document.getElementById("change-color-mode");
@@ -630,6 +638,7 @@ window.onload = function init() {
     movingMode = false;
     changeColorMode = true;
     changeSquare = false;
+    emptyData()
   });  
   
   var radioButton3 = document.getElementById("change-square");
@@ -637,6 +646,7 @@ window.onload = function init() {
     movingMode = false;
     changeColorMode = false;
     changeSquare = true;
+    emptyData()
   });  
 
   canvas.addEventListener("mousedown", (event) => {
