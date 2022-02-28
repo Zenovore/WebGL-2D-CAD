@@ -19,17 +19,17 @@ var positionAttributeLocation;
 var colorUniformLocation;
 var selectedColor = { r: 0, g: 0, b: 0 };
 
-var allLineData = []; // TODO: Array of all line [[lineData],[lineData]]
-var lineData = []; // TODO: Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
+var allLineData = []; //  Array of all line [[lineData],[lineData]]
+var lineData = []; //  Array of 2 vertex and color [[x1,y1,x2,y2],[color{r,g,b}]]
 
-var allSquareData = []; // TODO: Array of all line [[squareData],[squareData]]
-var squareData = []; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allSquareData = []; //  Array of all line [[squareData],[squareData]]
+var squareData = []; //  Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
 
-var allRectangleData = []; // TODO: Array of all line [[rectangleData],[rectangleData]]
-var rectangleData = []; // TODO: Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
+var allRectangleData = []; //  Array of all line [[rectangleData],[rectangleData]]
+var rectangleData = []; //  Array of 4 vertex and color [[x1,y1,x2,y2,x3,y3,..],[color{r,g,b}]]
 
-var allPolygonData = []; // TODO: Array of all polygon [[polygonData],[polygonData]]
-var polygonData = []; // TODO: Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
+var allPolygonData = []; //  Array of all polygon [[polygonData],[polygonData]]
+var polygonData = []; //  Array of n vertex and color [[x1,y1,x2,y2,xn,yn,..],[color{r,g,b}]]
 
 var canvasWidth;
 var canvasHeight;
@@ -37,8 +37,9 @@ var canvasHeight;
 var width = 0.5;
 
 var movingMode = false;
-var movingData;
 var changeColorMode = false;
+var changeSquare = false;
+var movingData;
 
 // ================= SHADER AND PROGRAM =================
 function createShader(gl, type, source) {
@@ -160,6 +161,25 @@ function getPolygonIndex(event){
     allPolygonData[index][1] = selectedColor
     render()
   }
+}
+
+function changeSquareSize(event){
+  let vertexLocation = getMouseCoordinate(event);
+  let index = -1;
+  for (let i = 0; i < allSquareData.length; i++){
+    if (checkPointInsidePolygon(vertexLocation,allSquareData[i][0])){
+      index = i
+    }
+  }
+  if (index != -1){
+    var widthx = (width / canvasWidth) * 720;
+    var widthy = (width / canvasHeight) * 720;
+    allSquareData[index][0][3] = allSquareData[index][0][1] + widthy;
+    allSquareData[index][0][4] = allSquareData[index][0][0] + widthx;
+    allSquareData[index][0][5] = allSquareData[index][0][1] + widthy;
+    allSquareData[index][0][6] = allSquareData[index][0][0] + widthx;
+    render()
+  }  
 }
 
 function getCartesianDistance(x1,y1,x2,y2){
@@ -295,8 +315,8 @@ function emptyArray(array) {
 }
 
 function mouseClicked(pos) {
-  // TODO: Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
-  // Line TODO: Afif
+  //  Ambil vertex dari pos, cari pasangannya, push ke dalam data (line 9 -17)
+  // Line  Afif
   if (selectedShape == "line") {
     console.log("line");
     countLineVertex--;
@@ -316,7 +336,7 @@ function mouseClicked(pos) {
       lineData.push(pos.y);
     }
   }
-  // Square TODO: Ahan
+  // Square  Ahan
   if (selectedShape == "square") {
     console.log("square");
     var widthx = (width / canvasWidth) * 720;
@@ -325,20 +345,21 @@ function mouseClicked(pos) {
     squareData.push(pos.x);
     squareData.push(pos.y);
 
-    squareData.push(pos.x + widthx);
-    squareData.push(pos.y);
-
     squareData.push(pos.x);
     squareData.push(pos.y + widthy);
 
     squareData.push(pos.x + widthx);
     squareData.push(pos.y + widthy);
+
+    squareData.push(pos.x + widthx);
+    squareData.push(pos.y);
+    
     console.log(squareData);
     allSquareData.push([squareData, selectedColor]);
     squareData = [];
     render();
   }
-  // Rectangle (Adjustable) TODO: Chris
+  // Rectangle (Adjustable)  Chris
   if (selectedShape == "rectangle") {
     console.log("rectangle");
     console.log(pos);
@@ -365,7 +386,7 @@ function mouseClicked(pos) {
       }
     }
   }
-  // Polygon TODO: Alex
+  // Polygon  Alex
   if (selectedShape == "polygon") {
     console.log("polygon");
     console.log(pos);
@@ -390,7 +411,7 @@ function mouseClicked(pos) {
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
-  // TODO: Ambil vertex data, create array, gambar sesuai bentuk
+  //  Ambil vertex data, create array, gambar sesuai bentuk
   // if (selectedShape == "line"){
   //   lineData = [];
   // }
@@ -426,7 +447,7 @@ function render() {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
     count = 4;
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, count);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, count);
   });
 
   allRectangleData.map((item, index) => {
@@ -594,18 +615,28 @@ window.onload = function init() {
   radioButton.addEventListener("click", function () {
     movingMode = false;
     changeColorMode = false;
+    changeSquare = false;
   }); 
 
   var radioButton1 = document.getElementById("move-mode");
   radioButton1.addEventListener("click", function () {
     movingMode = true;
     changeColorMode = false;
+    changeSquare = false;
   });  
 
   var radioButton2 = document.getElementById("change-color-mode");
   radioButton2.addEventListener("click", function () {
     movingMode = false;
     changeColorMode = true;
+    changeSquare = false;
+  });  
+  
+  var radioButton3 = document.getElementById("change-square");
+  radioButton3.addEventListener("click", function () {
+    movingMode = false;
+    changeColorMode = false;
+    changeSquare = true;
   });  
 
   canvas.addEventListener("mousedown", (event) => {
@@ -625,7 +656,7 @@ window.onload = function init() {
   });
 
   canvas.addEventListener("click", (event) => {
-    if (!movingMode && !changeColorMode){
+    if (!movingMode && !changeColorMode && !changeSquare){
       drawing = true;
       console.log(event);
       let pos = getMouseCoordinate(event);
@@ -634,6 +665,9 @@ window.onload = function init() {
     } else if(changeColorMode){
       getPolygonIndex(event)
       console.log('masuk change color')
+    } else if (changeSquare){
+      changeSquareSize(event)
+      console.log('masuk change square')
     }
   });
 };
