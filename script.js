@@ -278,7 +278,6 @@ function changeVertexLocation(event) {
   let newVertexPos = getMouseCoordinate(event);
   console.log(movingData);
   if (movingData.moveShape == "line") {
-    console.log("mangga");
     console.log(allLineData[movingData.indexArray][0]);
     allLineData[movingData.indexArray][0][movingData.indexArrayPoint] =
       newVertexPos.x;
@@ -286,7 +285,6 @@ function changeVertexLocation(event) {
       newVertexPos.y;
   }
   if (movingData.moveShape == "square") {
-    console.log("mangga1");
     console.log(allSquareData);
     allSquareData[movingData.indexArray][0][movingData.indexArrayPoint] =
       newVertexPos.x;
@@ -294,14 +292,12 @@ function changeVertexLocation(event) {
       newVertexPos.y;
   }
   if (movingData.moveShape == "rectangle") {
-    console.log("mangga2");
     allRectangleData[movingData.indexArray][0][movingData.indexArrayPoint] =
       newVertexPos.x;
     allRectangleData[movingData.indexArray][0][movingData.indexArrayPoint + 1] =
       newVertexPos.y;
   }
   if (movingData.moveShape == "polygon") {
-    console.log("mangga3");
     allPolygonData[movingData.indexArray][0][movingData.indexArrayPoint] =
       newVertexPos.x;
     allPolygonData[movingData.indexArray][0][movingData.indexArrayPoint + 1] =
